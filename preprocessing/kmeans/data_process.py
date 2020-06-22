@@ -6,9 +6,31 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import OneHotEncoder
 import math
 from pandas import Series, DataFrame
+import os
 
+"""
+数据预处理，选择出可以作为特征的变量：
+            'brand_id', 'color', 'displacement', 'tag_ids',
+            'mileage', 'sell_price', 'transfer_num', 'browse_num',
+            'license_time'
+            
+这些变量有3大类，类别变量、数值变量、时间变量。
 
-input_path = "/Users/gongyouliu/Desktop/olddata/code/github/hema_models/data"
+类别变量通过one-hot和n-hot编码，转化为向量形式。其中one-hot编码用了scikit-learn中的OneHotEncoder方法。
+n-hot编码是自己实现的。
+
+数值变量通过适当的数据变换(即特征预处理)转化为具体的数值。
+
+时间变量，取年份，用该年份到2020年之间间隔的年数作为数值特征。
+
+该脚本通过DataFrame的一些操作将上面的9类特征，最终转化为45个数值特征，供后面的KMeans模型训练。
+
+最终的特征加上一列id(id放在最前面)转化为csv文件存在data目录下的train.csv中
+           
+"""
+
+cwd = os.getcwd()  # 获取当前工作目录
+data_path = os.path.abspath(os.path.join(cwd, "../../data"))  # 获取data目录
 
 # fo = open(input_path + '/' + r'hema_car-new.csv', 'w')
 # ff = csv.writer(fo)
@@ -31,7 +53,7 @@ input_path = "/Users/gongyouliu/Desktop/olddata/code/github/hema_models/data"
 #                         'displacement' : 'category'},
 #                  parse_dates=['license_time'])
 
-df = pd.read_csv(input_path + '/' + r'hema_car-new.csv')
+df = pd.read_csv(data_path + '/' + r'hema_car-new.csv')
 
 # df.columns
 #
@@ -163,14 +185,15 @@ tag_ids_array_add_id = np.hstack((np.asarray([data['id'].values]).T, tag_ids_arr
 n_hot_features_df = DataFrame(tag_ids_array_add_id, columns=np.hstack((np.asarray(['id']), n_hot.get_feature_names())))
 n_hot_features_df['id'] = n_hot_features_df['id'].apply(lambda t: int(t))
 
-# 三个特征合并。
-df = data.merge(one_hot_features_df, on='id', how='left').merge(n_hot_features_df, on='id', how='left')
+# 三类特征合并。
+data_and_features_df = data.merge(one_hot_features_df, on='id',
+                                  how='left').merge(n_hot_features_df, on='id', how='left')
 
-df_train = df.drop(columns=['id', 'brand_id', 'color', 'displacement', 'tag_ids',
-                            'mileage', 'sell_price', 'transfer_num', 'browse_num', 'license_time', ])
+df_train = data_and_features_df.drop(columns=['brand_id', 'color', 'displacement', 'tag_ids',
+                                              'mileage', 'sell_price', 'transfer_num', 'browse_num',
+                                              'license_time', ])
 
-output_path = "/Users/gongyouliu/Desktop/olddata/code/github/hema_models/data"
 # index = 0 写入时不保留索引列。
-df_train.to_csv(output_path + '/' + r'train.csv', index=0)
+df_train.to_csv(data_path + '/' + r'train.csv', index=0)
 # read
-df = pd.read_csv(output_path + '/' + r'train.csv')
+# df = pd.read_csv(data_path + '/' + r'train.csv')
