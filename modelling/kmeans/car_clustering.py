@@ -12,7 +12,7 @@ import os
 """
 
 # 聚类的数量
-n_clusters = 8
+n_clusters = 1000
 
 cwd = os.getcwd()  # 获取当前工作目录
 data_path = os.path.abspath(os.path.join(cwd, "../../data"))  # 获取data目录
