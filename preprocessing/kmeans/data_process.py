@@ -173,8 +173,8 @@ def vec(t):
     a = t.split(',')
     v = dict_vec[a[0]]
     if len(a) > 1:
-        for t in a[1:]:
-            v = v + dict_vec[t]
+        for s in a[1:]:
+            v = v + dict_vec[s]
     return v
 
 
