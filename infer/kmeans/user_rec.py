@@ -42,7 +42,7 @@ for x, y in cluster_ids_dict.items():
 source_df = pd.read_csv(data_path + '/' + r'hema_car-new.csv')
 
 car_info_df = source_df[['id', 'brand_name', 'series_name',
-                         'model_name', 'color', 'tag_names', 'displacement', ]]
+                         'model_name', 'color', 'sell_price', 'tag_names', 'displacement', ]]
 
 
 # 获得每辆车的基础信息，这样可以直观看到推荐的结果，了解车的基本情况
@@ -53,10 +53,11 @@ for i in range(car_info_df.shape[0]):
     series_name = car_info_df['series_name'].values[i]
     model_name = car_info_df['model_name'].values[i]
     color = car_info_df['color'].values[i]
+    sell_price = car_info_df['sell_price'].values[i]
     tag_names = car_info_df['tag_names'].values[i]
     displacement = car_info_df['displacement'].values[i]
     dic_ = {"brand_name": brand_name, "series_name": series_name, "model_name": model_name,
-            "color": color, "tag_names": tag_names, "displacement": displacement}
+            "color": color, "sell_price": sell_price, "tag_names": tag_names, "displacement": displacement}
     car_info_dic[id_] = dic_
 
 
@@ -74,4 +75,4 @@ def user_rec_and_car_info(u_id):
         print("推荐的车：" + str(id_rec) + " -> " + str(car_info_dic[id_rec]))
 
 
-user_rec_and_car_info(1)
+user_rec_and_car_info(43)
