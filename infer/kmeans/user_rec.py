@@ -62,14 +62,14 @@ for i in range(car_info_df.shape[0]):
 
 
 # 基于用户最近浏览的车，给他推荐相似的K个车。
-def user_rec(u_id):
-    return random.sample(cluster_ids_dict.get(id_cluster_dict.get(u_id)), K)
+def user_rec(car_id):
+    return random.sample(cluster_ids_dict.get(id_cluster_dict.get(car_id)), K)
 
 
 # 基于用户最近浏览的车，给他推荐相似的K个车及用户喜欢的车的信息和推荐的车的信息。
-def user_rec_and_car_info(u_id):
-    rec = random.sample(cluster_ids_dict.get(u_id), K)
-    print("用户喜欢的车：" + str(u_id) + " -> " + str(car_info_dic[u_id]))
+def user_rec_and_car_info(car_id):
+    rec = random.sample(cluster_ids_dict.get(id_cluster_dict.get(car_id)), K)
+    print("用户喜欢的车：" + str(car_id) + " -> " + str(car_info_dic[car_id]))
     print("给用户推荐的车：")
     for id_rec in rec:
         print("推荐的车：" + str(id_rec) + " -> " + str(car_info_dic[id_rec]))
