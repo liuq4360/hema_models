@@ -56,6 +56,7 @@ data_path = os.path.abspath(os.path.join(cwd, "../../data"))  # 获取data目录
 df = pd.read_csv(data_path + '/' + r'hema_car-new.csv')
 
 # df.columns
+# df.shape 多少行、多少列
 #
 # data = df[['id', 'brand_id']] # 取出两列
 # df[df.sell_price > 400]  # 某列值大于400的所有数据
@@ -92,7 +93,7 @@ data = df[['id',
 
 
 # license_time: 将上牌时间到现在过了多少年作为一个特征
-data['past_year'] = data['license_time'].apply(lambda x: 2020 - int(str(x)[0:4]))
+data['past_year'] = data['license_time'].apply(lambda t: 2020 - int(str(t)[0:4]))
 
 # mileage：最大值为172416.0，最小值为0，最大值取对数后为12. x -> log(x+1)
 data['log_mileage'] = data['mileage'].apply(lambda t: math.log(t+1))
