@@ -8,6 +8,9 @@ import math
 from pandas import Series, DataFrame
 import os
 
+from sklearn.model_selection import train_test_split
+
+
 cwd = os.getcwd()  # 获取当前工作目录
 data_path = os.path.abspath(os.path.join(cwd, "../../data"))  # 获取data目录
 
@@ -233,9 +236,15 @@ data_and_features_df = data_and_features_df.dropna(axis=0, how='any')
 
 
 # index = 0 写入时不保留索引列。
-data_and_features_df.to_csv(data_path + '/' + r'logistic_train.csv', index=0)
+data_and_features_df.to_csv(data_path + '/' + r'logistic_model_data.csv', index=0)
 # read
-# data_and_features_df = pd.read_csv(data_path + '/' + r'logistic_train.csv')
+# data_and_features_df = pd.read_csv(data_path + '/' + r'logistic_model_data.csv')
 
 
+# 展示不同的调用方式
+logistic_train_df, logistic_test_df = train_test_split(data_and_features_df,
+                                                       test_size=0.3, random_state=42)
+
+logistic_train_df.to_csv(data_path + '/' + r'logistic_train_data.csv', index=0)
+logistic_test_df.to_csv(data_path + '/' + r'logistic_test_data.csv', index=0)
 
