@@ -15,7 +15,31 @@ cwd = os.getcwd()  # 获取当前工作目录
 data_path = os.path.abspath(os.path.join(cwd, "../../data"))  # 获取data目录
 
 """
-下面读取4类用于构建特征的原始数据
+
+一、特征相关：
+下面读取3类用于构建特征的原始数据。
+1. 用户行为相关特征，从hema_car这张表中来，主要包括user_province和user_status这两个字段构建的特征
+2. 车相关特征，从hema_car这张表中来，主要包括 'brand_id', 'color', 'displacement', 'tag_ids',
+               'mileage', 'sell_price', 'transfer_num', 'browse_num',
+               'license_time' 这些特征
+3. 用户行为特征，从hema_user_login_record这张用户行为记录表中，获取相关用户行为，并统计用户登录次数
+                                                                                 
+二、label相关：
+由于没有明显的数据可以用于识别用户是否喜欢某个车，这里用到如下两类数据作为用户喜欢车的"证据"。
+1. csb_car_event：浏览二手车车源表，这个表有个字段stay_time，用户停留时间，数值都很大，不知道单位是多少，这里
+   只有stay_time有值就认为用户喜欢该车，空值认为用户不喜欢。
+2. hema_car_purchase_info：线上求购表，这个表有brand_id、series_id、model_id这三个字段，但是没有car_id，
+   这里的处理方法是，如果只有这三个字段都可以跟hema_car中的对应字段关联得上，就认为hema_car中对应的car_id是用户喜欢
+   的。
+   
+经过上面一、二两步的处理就可以构建logistic回归的训练数据。
+
+由于河马的数据质量很差，没有很好的合适的数据，我这里只将模型的流程跑一遍，也没法优化模型，最终的效果也没有太大意义。
+你只需要将整个流程走完，理解各个步骤的含义即可。以后我可以找一个更好的数据带你做一个真正意义上的模型。
+
+
+关于模型特征和label之间的关系，可以参考images文件夹下面的"河马logistic回归模型.png"这个图。
+
 """
 
 # 二手车数据&用户相关数据
@@ -231,7 +255,7 @@ data_and_features_df["label"] = data_and_features_df.\
 # label = 0   12561
 # label =1     5609
 
-
+# 剔除掉包括空值的行，留下的行作为数据集。
 data_and_features_df = data_and_features_df.dropna(axis=0, how='any')
 
 
@@ -241,7 +265,8 @@ data_and_features_df.to_csv(data_path + '/' + r'logistic_model_data.csv', index=
 # data_and_features_df = pd.read_csv(data_path + '/' + r'logistic_model_data.csv')
 
 
-# 展示不同的调用方式
+# 将数据集划分为训练集logistic_train_df和测试集logistic_test_df。训练集logistic_train_df
+# 用于logistic回归模型的训练，而测试集logistic_test_df用于测试训练好的logistic回归模型的效果。
 logistic_train_df, logistic_test_df = train_test_split(data_and_features_df,
                                                        test_size=0.3, random_state=42)
 
