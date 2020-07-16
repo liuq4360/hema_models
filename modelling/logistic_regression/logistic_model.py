@@ -81,15 +81,22 @@ y_score = clf.predict(X_test)
 """
 
 # confusion matrix
+# 混淆矩阵参考百度词条介绍：https://baike.baidu.com/item/%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5/10087822?fr=aladdin
 y_score = clf.predict(X_test)
 cm = confusion_matrix(y_test, y_score)
 cm_display = ConfusionMatrixDisplay(cm).plot()
 
 # roc curve
+# ROC 和 AUC 的介绍见：
+# 1. https://baijiahao.baidu.com/s?id=1671508719185457407&wfr=spider&for=pc
+# 2. https://blog.csdn.net/yinyu19950811/article/details/81288287
 fpr, tpr, _ = roc_curve(y_test, y_score, pos_label=clf.classes_[1])
 roc_display = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
 
 # precision recall
+# 准确率和召回率的介绍参考：
+# 1. https://www.zhihu.com/question/19645541/answer/91694636
+
 prec, recall, _ = precision_recall_curve(y_test, y_score, pos_label=clf.classes_[1])
 pr_display = PrecisionRecallDisplay(precision=prec, recall=recall).plot()
 
